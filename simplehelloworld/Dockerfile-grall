@@ -1,0 +1,30 @@
+# Stage 1: Build the application
+FROM ghcr.io/graalvm/native-image:ol8-java17-22 AS builder
+
+# Install Maven
+RUN microdnf install findutils tar gzip
+RUN curl -sL https://archive.apache.org/dist/maven/maven-3/3.8.6/binaries/apache-maven-3.8.6-bin.tar.gz | tar xz -C /usr/share \
+    && mv /usr/share/apache-maven-3.8.6 /usr/share/maven \
+    && ln -s /usr/share/maven/bin/mvn /usr/bin/mvn
+
+WORKDIR /workspace
+
+# Copy only the files needed for the build to improve layer caching
+COPY pom.xml .
+COPY src ./src
+
+# Build the native image
+RUN mvn -Pnative native:compile
+
+# Stage 2: Create the final minimal image
+FROM oraclelinux:8-slim
+WORKDIR /app
+
+# Copy the native executable from the builder image
+COPY --from=builder /workspace/target/simplehelloworld /app/simplehelloworld
+
+# Set the entry point to the native executable
+CMD ["/app/simplehelloworld"]
+
+# Expose the port your application runs on (change if needed)
+EXPOSE 8082
