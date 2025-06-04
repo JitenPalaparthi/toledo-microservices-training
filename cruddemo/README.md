@@ -1,5 +1,10 @@
 - Create a product
-curl -X POST -H "Content-Type: application/json" -d '{"name":"Laptop","price":999.99}' http://localhost:8080/api/products
+curl -X POST -H "Content-Type: application/json" -d '{"name":"Laptop","price":999.99}' http://springboot-demo.local/api/products
+
+
+
+curl -X POST -H "Content-Type: application/json" -d '{"name":"Laptop","price":999.99}' curl http://localhost:8080/api/products
+
 
 - GetAllProducts
 

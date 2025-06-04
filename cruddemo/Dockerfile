@@ -7,6 +7,8 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
+# if the directory is not there, it creates
+# it cd that directore mkdir app && cd app
 
 # Copy only the files needed for dependency resolution first
 COPY pom.xml .
