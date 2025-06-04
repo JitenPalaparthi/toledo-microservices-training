@@ -3,7 +3,7 @@ curl -X POST -H "Content-Type: application/json" -d '{"name":"Laptop","price":99
 
 
 
-curl -X POST -H "Content-Type: application/json" -d '{"name":"Laptop","price":999.99}' curl http://localhost:8080/api/products
+curl -X POST -H "Content-Type: application/json" -d '{"name":"Laptop","price":999.99}' http://127.0.0.1:60846/api/products
 
 
 - GetAllProducts

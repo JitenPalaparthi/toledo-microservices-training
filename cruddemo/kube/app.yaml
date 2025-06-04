@@ -15,18 +15,42 @@ spec:
       containers:
       - name: springboot-app
         image: jpalaparthi/toledo-cruddemo
+
         env:
         - name: DB_HOST
-          value: postgresql.default.svc.cluster.local
-          # <service-name>.<namespace>.svc.cluster.local
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_HOST
+              
         - name: DB_PORT
-          value: "5432"
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_PORT
+
         - name: DB_NAME
-          value: springboot_crud
+          valueFrom:
+            configMapKeyRef:
+              name: db-config
+              key: DB_NAME
+
         - name: DB_USER
-          value: postgres
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: DB_USER 
+
         - name: DB_PASSWORD
-          value: postgres
+          valueFrom:
+            secretKeyRef:
+              name: db-secret
+              key: DB_PASSWORD               
+          # <service-name>.<namespace>.svc.cluster.local
+        # - name: DB_USER
+        #   value: postgres
+        # - name: DB_PASSWORD
+        #   value: postgres
         resources:
           limits:
             memory: "256Mi"
@@ -41,9 +65,51 @@ metadata:
 spec:
   selector:
     app: springboot-app
-  type: LoadBalancer
+  # type: LoadBalancer
   ports:
     - protocol: TCP
       port: 80
       targetPort: 8080
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: springboot-ingress
+# spec:
+#   rules:
+#   - host: springboot-demo.local
+#     http: 
+#       paths:
+#       - path: /
+#         pathType: Prefix
+#         backend:
+#           service:
+#             name: springboot-app
+#             port: 
+#               number: 80
+#       # - path: /customers
+#       #   pathType: Prefix
+#       #   backend:
+#       #     service:
+#       #       name: springboot-custmersapp
+#       #       port: 
+#       #         number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: springboot-ingress
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: springboot-demo.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: springboot-app
+            port:
+              number: 80
 
