@@ -4,9 +4,6 @@
   quay.io/keycloak/keycloak:latest \
   start-dev
 
-  9618558500
-  JitenP@Outlook.com
-
   CQRS 
   SAGA 
   With DB and Kafka
